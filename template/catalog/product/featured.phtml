@@ -1,0 +1,104 @@
+<script src="<?=$this->getSkinUrl()?>js/slider/jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $j = jQuery.noConflict();
+</script>
+<script src="<?=$this->getSkinUrl()?>js/slider/jquery.carouFredSel-5.6.4-packed.js" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+			$j(function() {
+			$j('#foo2').carouFredSel({
+					prev: '#prev2',
+					next: '#next2',
+					pagination: "#pager2",
+					auto: false
+				});
+			});
+</script>
+
+	<?php
+		// some helpers
+		$_helper = $this->helper('catalog/output');
+		$storeId = Mage::app()->getStore()->getId();
+		$catalog = $this->getLayout()->createBlock('catalog/product_list')->setStoreId($storeId);
+
+		// get all products that are marked as featured
+		$collection = Mage::getModel('catalog/product')->getCollection();
+		$collection->addAttributeToSelect('featured_product');
+		$collection->addFieldToFilter(array(
+			array('attribute' => 'featured_product', 'eq' => true),
+		));
+
+		// if no products are currently featured, display some text
+		if (!$collection->count()) :
+	?>
+
+	<p class="note-msg"><?php echo $this->__('There are no featured products at the moment.') ?></p>
+
+	<?php else : ?>
+
+	<div class="category-products">
+            
+            <div class="list_carousel">
+                <div class="prevLink"><a id="prev2" class="prev" href="#"><img src="<?=$this->getSkinUrl()?>images1/prev.jpg" alt="Previous"/></a></div>   
+	<?php
+		$_collectionSize = $collection->count();
+		$_columnCount = 10;
+		$i = 0;
+
+		foreach ($collection as $_product) :
+			$_product = Mage::getModel('catalog/product')->setStoreId($storeId)->load($_product->getId());
+
+	?>
+                
+	    <?php if ($i++%$_columnCount==0): ?>
+                <ul id="foo2">
+	    <?php endif ?>
+                    <li>
+	        <div class="featureBox">
+                    <div style="height:210px;">
+                    <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image"><img src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image'); ?>" width="153" height="187" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" /></a>
+                    </div>
+                    <div style="float:left; width:150px; padding-left:5px;">
+                    
+                    <?php $price= $_helper->productAttribute($_product, $_product->getPrice());
+                            $newFormat = number_format($price, 2, '.', '');?>
+	            <p><?php echo '&pound;'.' '.$newFormat ?></p>
+                    <p>Code:<?php echo $_helper->productAttribute($_product, $_product->getSku()) ?></p>
+	            </div>
+                        <?php if($_product->getRatingSummary()): ?>
+	            <?php //echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+	            <?php endif; ?>
+	            <?php echo $this->getPriceHtml($_product, true) ?>
+	            <div style="float:left;">
+                        <a onclick="setLocation('<?php echo $catalog->getAddToCartUrl($_product) ?>')"> <img src="<?php echo $this->getSkinUrl()?>images/cartImg.jpg" alt="Add to cart" /></a>
+	                <?php if($_product->isSaleable()): ?>
+	                    <!--<button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $catalog->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button>-->
+	                <?php else: ?>
+	                    <p class="availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+	                <?php endif; ?>
+<!--	                <ul class="add-to-links">
+	                    <?php if ($this->helper('wishlist')->isAllow()) : ?>
+	                        <li><a href="<?php echo $this->helper('wishlist')->getAddUrl($_product) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
+	                    <?php endif; ?>
+	                    <?php if($_compareUrl=$catalog->getAddToCompareUrl($_product)): ?>
+	                        <li><span class="separator">|</span> <a href="<?php echo $_compareUrl ?>" class="link-compare"><?php echo $this->__('Add to Compare') ?></a></li>
+	                    <?php endif; ?>
+	                </ul>-->
+                            
+	            </div>
+                </div>
+                        </li>
+	    <?php if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
+	   </ul>
+                
+	    <?php endif ?>
+
+		<?php endforeach ?>
+
+        <script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
+<div class="nextLink"><a id="next2" class="next" href="#"><img src="<?=$this->getSkinUrl()?>images1/next.jpg" alt="Next" /></a></div>
+	</div>
+</div>
+	<?php endif ?>
+        
