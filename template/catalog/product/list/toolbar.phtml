@@ -33,7 +33,7 @@
 ?>
 <?php if($this->getCollection()->getSize()): ?>
 <div class="toolbar">
-    <div class="pager" id="pager">
+    <div class="pager pagerList">
         <p class="amount">
             <?php if($this->getLastPageNum()>1): ?>
                 <?php echo $this->__('Items %s to %s of %s total', $this->getFirstNum(), $this->getLastNum(), $this->getTotalNum()) ?>

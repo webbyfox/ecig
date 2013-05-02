@@ -40,16 +40,16 @@
     </div>
     <div id="shopbyRepeat">
         <dl id="narrow-by-list2">
-            <dt><?php echo $this->__('Category') ?></dt>            
+            <dt><?php echo $this->__('Category') ?></dt>
+            <div id="cartLine"></div>
             <dd>
-                <div class="cartLineLeft1"></div>
                 <ol>
                 <?php foreach ($_categories as $_category): ?>
                     <?php if($_category->getIsActive()): ?>
                     <li>
                         <a href="<?php echo $this->getCategoryUrl($_category) ?>"<?php if ($this->isCategoryActive($_category)): ?> class="current"<?php endif; ?>><?php echo $this->htmlEscape($_category->getName()) ?></a> <!--(<?php //echo $_category->getProductCount() ?>)-->
                     </li>
-                    <li class="cartLineLeft1"></li>
+                    <div id="cartLine1"></div>
                     <?php endif; ?>
                 <?php endforeach ?>
                 </ol>
